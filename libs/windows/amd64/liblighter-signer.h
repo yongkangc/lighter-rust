@@ -19,7 +19,7 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 /* Start of preamble from import "C" comments.  */
 
 
-#line 18 "sharedlib.go"
+#line 16 "main.go"
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -27,6 +27,14 @@ typedef struct {
 	char* str;
 	char* err;
 } StrOrErr;
+
+typedef struct {
+	uint8_t txType;
+	char* txInfo;
+	char* txHash;
+	char* messageToSign;
+	char* err;
+} SignedTxResponse;
 
 typedef struct {
 	char* privateKey;
@@ -103,26 +111,25 @@ typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
 extern "C" {
 #endif
 
-extern __declspec(dllexport) ApiKeyResponse GenerateAPIKey(char* cSeed);
+extern __declspec(dllexport) ApiKeyResponse GenerateAPIKey();
 extern __declspec(dllexport) char* CreateClient(char* cUrl, char* cPrivateKey, int cChainId, int cApiKeyIndex, long long int cAccountIndex);
 extern __declspec(dllexport) char* CheckClient(int cApiKeyIndex, long long int cAccountIndex);
-extern __declspec(dllexport) StrOrErr SignChangePubKey(char* cPubKey, long long int cNonce);
-extern __declspec(dllexport) StrOrErr SignCreateOrder(int cMarketIndex, long long int cClientOrderIndex, long long int cBaseAmount, int cPrice, int cIsAsk, int cOrderType, int cTimeInForce, int cReduceOnly, int cTriggerPrice, long long int cOrderExpiry, long long int cNonce);
-extern __declspec(dllexport) StrOrErr SignCreateGroupedOrders(uint8_t cGroupingType, CreateOrderTxReq* cOrders, int cLen, long long int cNonce);
-extern __declspec(dllexport) StrOrErr SignCancelOrder(int cMarketIndex, long long int cOrderIndex, long long int cNonce);
-extern __declspec(dllexport) StrOrErr SignWithdraw(long long int cUSDCAmount, long long int cNonce);
-extern __declspec(dllexport) StrOrErr SignCreateSubAccount(long long int cNonce);
-extern __declspec(dllexport) StrOrErr SignCancelAllOrders(int cTimeInForce, long long int cTime, long long int cNonce);
-extern __declspec(dllexport) StrOrErr SignModifyOrder(int cMarketIndex, long long int cIndex, long long int cBaseAmount, long long int cPrice, long long int cTriggerPrice, long long int cNonce);
-extern __declspec(dllexport) StrOrErr SignTransfer(long long int cToAccountIndex, long long int cUSDCAmount, long long int cFee, char* cMemo, long long int cNonce);
-extern __declspec(dllexport) StrOrErr SignCreatePublicPool(long long int cOperatorFee, long long int cInitialTotalShares, long long int cMinOperatorShareRate, long long int cNonce);
-extern __declspec(dllexport) StrOrErr SignUpdatePublicPool(long long int cPublicPoolIndex, int cStatus, long long int cOperatorFee, long long int cMinOperatorShareRate, long long int cNonce);
-extern __declspec(dllexport) StrOrErr SignMintShares(long long int cPublicPoolIndex, long long int cShareAmount, long long int cNonce);
-extern __declspec(dllexport) StrOrErr SignBurnShares(long long int cPublicPoolIndex, long long int cShareAmount, long long int cNonce);
-extern __declspec(dllexport) StrOrErr SignUpdateLeverage(int cMarketIndex, int cInitialMarginFraction, int cMarginMode, long long int cNonce);
-extern __declspec(dllexport) StrOrErr CreateAuthToken(long long int cDeadline);
-extern __declspec(dllexport) char* SwitchAPIKey(int c);
-extern __declspec(dllexport) StrOrErr SignUpdateMargin(int cMarketIndex, long long int cUSDCAmount, int cDirection, long long int cNonce);
+extern __declspec(dllexport) SignedTxResponse SignChangePubKey(char* cPubKey, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignCreateOrder(int cMarketIndex, long long int cClientOrderIndex, long long int cBaseAmount, int cPrice, int cIsAsk, int cOrderType, int cTimeInForce, int cReduceOnly, int cTriggerPrice, long long int cOrderExpiry, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignCreateGroupedOrders(uint8_t cGroupingType, CreateOrderTxReq* cOrders, int cLen, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignCancelOrder(int cMarketIndex, long long int cOrderIndex, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignWithdraw(int cAssetIndex, int cRouteType, long long unsigned int cAmount, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignCreateSubAccount(long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignCancelAllOrders(int cTimeInForce, long long int cTime, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignModifyOrder(int cMarketIndex, long long int cIndex, long long int cBaseAmount, long long int cPrice, long long int cTriggerPrice, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignTransfer(long long int cToAccountIndex, int16_t cAssetIndex, uint8_t cFromRouteType, uint8_t cToRouteType, long long int cAmount, long long int cUsdcFee, char* cMemo, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignCreatePublicPool(long long int cOperatorFee, int cInitialTotalShares, long long int cMinOperatorShareRate, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignUpdatePublicPool(long long int cPublicPoolIndex, int cStatus, long long int cOperatorFee, int cMinOperatorShareRate, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignMintShares(long long int cPublicPoolIndex, long long int cShareAmount, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignBurnShares(long long int cPublicPoolIndex, long long int cShareAmount, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignUpdateLeverage(int cMarketIndex, int cInitialMarginFraction, int cMarginMode, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) StrOrErr CreateAuthToken(long long int cDeadline, int cApiKeyIndex, long long int cAccountIndex);
+extern __declspec(dllexport) SignedTxResponse SignUpdateMargin(int cMarketIndex, long long int cUSDCAmount, int cDirection, long long int cNonce, int cApiKeyIndex, long long int cAccountIndex);
 
 #ifdef __cplusplus
 }
