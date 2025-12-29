@@ -265,8 +265,7 @@ impl HttpClientBuilder {
         let mut client = HttpClient {
             account_index: config
                 .account_index
-                .ok_or_else(|| LighterError::Generic("`acount_index` is not set".into()))?
-                as i64,
+                .ok_or_else(|| LighterError::Generic("`acount_index` is not set".into()))?,
             api_key_index: config
                 .api_key_index
                 .ok_or_else(|| LighterError::Generic("`api_key_index` is not set".into()))?,

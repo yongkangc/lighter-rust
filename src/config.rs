@@ -43,7 +43,7 @@ impl RetryableStrategy for TooManyRequestsStrategy {
 pub struct LighterConfig {
     pub base_url: String,
     pub ws_url: String,
-    pub account_index: Option<i32>,
+    pub account_index: Option<i64>,
     pub eth_private_key: Option<SecretString>,
     pub api_key_index: Option<i32>,
     pub api_key_private: Option<SecretString>,
@@ -80,7 +80,7 @@ impl LighterConfig {
         Self::default()
     }
 
-    pub fn with_account_index(mut self, account_index: i32) -> Self {
+    pub fn with_account_index(mut self, account_index: i64) -> Self {
         self.account_index = Some(account_index);
         self
     }
