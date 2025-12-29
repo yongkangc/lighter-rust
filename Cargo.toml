@@ -37,6 +37,7 @@ exclude = [
 ]
 
 [build-dependencies]
+bindgen = "0.72.1"
 
 [dependencies]
 tokio = { version = "1.0", features = ["full"] }
