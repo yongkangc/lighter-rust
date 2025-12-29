@@ -1,3 +1,5 @@
+#[cfg(target_os = "macos")]
+use std::os::unix::fs::symlink;
 use std::{env, path::PathBuf};
 
 // We will build the `lighter-signer` bindings here
@@ -30,8 +32,30 @@ fn main() {
     }
     #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
     {
-        println!("cargo:rustc-link-search=native={dir}/libs/darwin/arm64");
+        let lib_dir = format!("{dir}/libs/darwin/arm64");
+        let dylib_path = format!("{lib_dir}/liblighter-signer.dylib");
+        let symlink_path = format!("{lib_dir}/lighter-signer-darwin-arm64.dylib");
+
+        // Create symlink if it doesn't exist (the dylib expects this name)
+        if !PathBuf::from(&symlink_path).exists()
+            && PathBuf::from(&dylib_path).exists() {
+                // Try to create symlink, ignore errors if it already exists
+                let _ = symlink("liblighter-signer.dylib", &symlink_path);
+            }
+
+        // Fix the dylib's install name to use @rpath
+        if PathBuf::from(&dylib_path).exists() {
+            use std::process::Command;
+            let _ = Command::new("install_name_tool")
+                .arg("-id")
+                .arg("@rpath/lighter-signer-darwin-arm64.dylib")
+                .arg(&dylib_path)
+                .output();
+        }
+
+        println!("cargo:rustc-link-search=native={lib_dir}");
         println!("cargo:rustc-link-lib=dylib=lighter-signer");
+        println!("cargo:rustc-link-arg=-Wl,-rpath,{lib_dir}");
     }
     #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
     {
